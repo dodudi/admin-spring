@@ -53,6 +53,10 @@ kr.it.rudy.admin/
 - Security is OAuth2 resource-server based — accepts tokens from an external authorization server
 - Actuator + Prometheus scrape endpoint at `/actuator/prometheus`
 
+## History
+
+`.claude/history.md` — 구현을 진행하면서 트러블슈팅, 주요 결정, 변경 이력을 날짜 역순으로 누적 기록한다. 항목 추가 시 파일 내 템플릿을 사용한다.
+
 ## Conventions
 
 Detailed coding rules are in `.claude/rules/`:
