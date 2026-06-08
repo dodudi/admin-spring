@@ -70,6 +70,7 @@ Detailed coding rules are in `.claude/rules/`:
 | `logging-conventions.md` | 로그 태그 형식, 레벨 기준, MDC |
 | `naming-conventions.md` | 클래스·인터페이스·구현체 네이밍 |
 | `test-conventions.md` | 테스트 어노테이션 선택, Mock 규칙, 네이밍 |
+| `git-conventions.md` | 브랜치 전략, 커밋 메시지 형식, PR 규칙 |
 
 ## Configuration
 
