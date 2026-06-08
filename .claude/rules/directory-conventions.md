@@ -37,7 +37,8 @@ com.example/
 ├── order/                         주문 도메인
 │   ├── domain/                    Entity, Repository, Enum
 │   ├── application/               Service (비즈니스 로직)
-│   ├── api/                       Controller
+│   ├── web/                       @Controller — Thymeleaf 뷰 반환
+│   ├── api/                       @RestController — JSON 응답
 │   └── dto/                       Request / Response 레코드
 │
 ├── payment/                       결제 도메인
@@ -45,7 +46,8 @@ com.example/
 │   ├── domain/                    Repository 인터페이스
 │   │   └── support/               Repository 커스텀 구현체
 │   ├── application/               Service 인터페이스 + 구현체
-│   ├── api/                       Controller
+│   ├── web/                       @Controller — Thymeleaf 뷰 반환
+│   ├── api/                       @RestController — JSON 응답
 │   └── dto/                       Request / Response 레코드
 │
 └── notification/                  알림 도메인
@@ -53,7 +55,8 @@ com.example/
     ├── property/                  외부 설정값 바인딩 클래스
     ├── application/               Service
     ├── handler/                   이벤트 핸들러
-    └── api/                       Controller
+    ├── web/                       @Controller — Thymeleaf 뷰 반환
+    └── api/                       @RestController — JSON 응답
 ```
 
 ---
@@ -65,11 +68,33 @@ com.example/
 | `domain/` | Entity, Repository 인터페이스, Enum | JPA 영속성 경계 |
 | `domain/support/` | Repository 커스텀 구현체 | 인터페이스와 분리 (Spring 관례) |
 | `application/` | Service 인터페이스·구현체 | 비즈니스 로직 |
-| `api/` | Controller | HTTP 요청·응답 처리 |
+| `web/` | `@Controller` | Thymeleaf 뷰 반환 |
+| `api/` | `@RestController` | JSON 응답 |
 | `dto/` | Request·Response 레코드 | 레이어 간 데이터 전달 |
 | `config/` | `@Configuration` 클래스 | 해당 도메인 설정만 포함 |
 | `property/` | `@ConfigurationProperties` 클래스 | 외부 설정값 바인딩 |
 | `handler/` | 이벤트·예외 핸들러 | |
+
+---
+
+## 리소스 디렉토리 구조
+
+```
+src/main/resources/
+├── application.yaml               공통 설정
+├── application-local.yaml         로컬 프로파일
+├── application-prod.yaml          운영 프로파일
+└── templates/                     Thymeleaf 템플릿 (패키지 구조와 대응)
+    ├── common/                    공통 레이아웃, 프래그먼트
+    └── {domain}/                  도메인별 뷰 (예: admin/user/list.html)
+```
+
+`web/` 패키지의 컨트롤러가 반환하는 뷰 이름은 `templates/` 하위 경로와 일치시킨다.
+
+```java
+// web/UserController.java
+return "admin/user/list";   // → templates/admin/user/list.html
+```
 
 ---
 
@@ -115,6 +140,10 @@ com.example.config.PaymentConfig
 com.example.interfaces/
 com.example.services/
 com.example.repositories/
+
+// ❌ api/에 @Controller 혼용 금지, web/에 @RestController 혼용 금지
+com.example.order.api.OrderViewController      // @Controller를 api/에 배치
+com.example.order.web.OrderRestController      // @RestController를 web/에 배치
 ```
 
 ---

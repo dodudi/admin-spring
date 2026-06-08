@@ -88,17 +88,23 @@ return ResponseEntity
 
 ---
 
-## GlobalExceptionHandler 위치 및 구조
+## ExceptionHandler 위치 및 구조
 
-`GlobalExceptionHandler`는 `common/exception` 패키지에 위치한다.
-(`api` 패키지가 아님에 주의)
+핸들러는 역할에 따라 두 클래스로 분리한다. 모두 `common/exception` 패키지에 위치한다.
 
 ```
-com.auth.common.exception/
+kr.it.rudy.admin.common.exception/
 ├── AuthException.java
 ├── ErrorCode.java
-└── GlobalExceptionHandler.java   ← 여기
+├── ApiExceptionHandler.java    ← @RestController 전용 (JSON 응답)
+└── ViewExceptionHandler.java   ← @Controller 전용 (뷰 이름 반환)
 ```
+
+---
+
+## ApiExceptionHandler — REST API 예외 처리
+
+`@RestControllerAdvice(annotations = RestController.class)`로 `@RestController`에서 발생한 예외만 처리한다.
 
 처리 핸들러 우선순위:
 
@@ -109,21 +115,73 @@ com.auth.common.exception/
 | 3 | `NoResourceFoundException` | `DEBUG` |
 | 4 | `Exception` (fallback) | `ERROR` |
 
-새 예외 타입을 핸들러에 추가할 때는 위 순서표를 함께 갱신한다.
-`Exception` fallback 핸들러보다 구체적인 타입을 항상 위에 배치한다.
+```java
+// ✅ 올바른 예
+@RestControllerAdvice(annotations = RestController.class)
+@RequiredArgsConstructor
+@Slf4j
+public class ApiExceptionHandler {
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAuthException(AuthException e) {
+        log.warn("[AUTH_EXCEPTION] {}", e.getMessage());
+        return ResponseEntity
+                .status(e.getErrorCode().getHttpStatus())
+                .body(ApiResponse.fail(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
+        log.error("[UNHANDLED_EXCEPTION]", e);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR));
+    }
+}
+```
+
+새 예외 타입을 추가할 때는 위 순서표를 함께 갱신한다.
+`Exception` fallback보다 구체적인 타입을 항상 위에 배치한다.
+
+---
+
+## ViewExceptionHandler — Thymeleaf 뷰 예외 처리
+
+`@ControllerAdvice(annotations = Controller.class)`로 `@Controller`에서 발생한 예외만 처리한다.
+핸들러 메서드는 뷰 이름(String)을 반환하고 에러 정보를 `Model`에 담는다.
 
 ```java
-// ✅ 올바른 예 — 구체 타입 핸들러 추가
-@ExceptionHandler(PaymentException.class)
-public ResponseEntity<ApiResponse<Void>> handlePaymentException(PaymentException e) {
-    log.warn("PaymentException: {}", e.getMessage());
-    return ResponseEntity
-            .status(e.getErrorCode().getHttpStatus())
-            .body(ApiResponse.fail(e.getErrorCode()));
-}
+// ✅ 올바른 예
+@ControllerAdvice(annotations = Controller.class)
+@Slf4j
+public class ViewExceptionHandler {
 
-// ❌ 잘못된 예
-// - Controller마다 try-catch로 예외 처리
-// - Exception 타입으로 직접 catch해서 응답 생성
-// - 스택 트레이스를 응답 바디에 포함
+    @ExceptionHandler(AuthException.class)
+    public String handleAuthException(AuthException e, Model model) {
+        log.warn("[VIEW_AUTH_EXCEPTION] {}", e.getMessage());
+        model.addAttribute("errorMessage", e.getErrorCode().getMessage());
+        return "error/common";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception e, Model model) {
+        log.error("[VIEW_UNHANDLED_EXCEPTION]", e);
+        model.addAttribute("errorMessage", "서버 오류가 발생했습니다.");
+        return "error/500";
+    }
+}
+```
+
+에러 뷰 템플릿은 `templates/error/` 하위에 위치한다.
+
+```
+src/main/resources/templates/error/
+├── common.html   ← 비즈니스 예외 공통
+└── 500.html      ← 서버 오류
+```
+
+```java
+// ❌ 잘못된 예 — @RestControllerAdvice 하나로 모두 처리
+@RestControllerAdvice                          // @Controller 예외도 JSON으로 응답됨
+public class GlobalExceptionHandler { ... }
 ```

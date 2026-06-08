@@ -16,12 +16,12 @@
 ```java
 // ✅ Service 단위 테스트 — MockitoExtension 사용
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class SimpleUserServiceTest {
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
-    private UserServiceImpl userService;
+    private SimpleUserService userService;
 }
 
 // ✅ Controller 단위 테스트 — @WebMvcTest 사용
@@ -58,7 +58,7 @@ class UserServiceImplTest { }
 ```java
 // ✅ 올바른 예 — @ExtendWith에서 @Mock 사용
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class SimpleUserServiceTest {
     @Mock
     private UserRepository userRepository;
 }
@@ -161,9 +161,11 @@ assertTrue(users.size() == 3);                 // assertTrue 직접 비교 금�
 `@WebMvcTest` + `MockMvc`로 HTTP 요청/응답을 검증한다.
 Security 필터가 개입하지 않도록 `@WithMockUser`를 사용한다.
 
+### @RestController — JSON 응답 검증
+
 ```java
-@WebMvcTest(UserController.class)
-class UserControllerTest {
+@WebMvcTest(UserApiController.class)
+class UserApiControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -201,6 +203,39 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("C001"));
+    }
+}
+```
+
+### @Controller — Thymeleaf 뷰 검증
+
+뷰 이름과 `Model`에 담긴 속성을 검증한다.
+
+```java
+@WebMvcTest(UserController.class)
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
+
+    @Test
+    @WithMockUser
+    void list_사용자_목록_조회시_목록_뷰_반환() throws Exception {
+        // given
+        List<UserResponse> users = List.of(
+                new UserResponse(1L, "홍길동", "hong@example.com", UserStatus.ACTIVE, LocalDateTime.now())
+        );
+        given(userService.findAll()).willReturn(users);
+
+        // when & then
+        mockMvc.perform(get("/admin/users"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/user/list"))          // 뷰 이름 검증
+                .andExpect(model().attributeExists("users"))        // Model 속성 존재 여부
+                .andExpect(model().attribute("users", users));      // Model 속성 값 검증
     }
 }
 ```
