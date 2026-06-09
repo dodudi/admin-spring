@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{common/head :: head('대시보드')}"></head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<div class="app-wrapper">
+
+    <nav th:replace="~{common/navbar :: navbar}"></nav>
+    <aside th:replace="~{common/sidebar :: sidebar('dashboard')}"></aside>
+
+    <main class="app-main">
+        <div class="app-content-header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="mb-0">대시보드</h3>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-end">
+                            <li class="breadcrumb-item active">대시보드</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box text-bg-primary">
+                            <div class="inner">
+                                <h3>0</h3>
+                                <p>전체 사용자</p>
+                            </div>
+                            <i class="small-box-icon bi bi-people-fill"></i>
+                            <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                                자세히 보기 <i class="bi bi-arrow-right-circle ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box text-bg-success">
+                            <div class="inner">
+                                <h3>0</h3>
+                                <p>오늘 접속</p>
+                            </div>
+                            <i class="small-box-icon bi bi-person-check-fill"></i>
+                            <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                                자세히 보기 <i class="bi bi-arrow-right-circle ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box text-bg-warning">
+                            <div class="inner">
+                                <h3>0</h3>
+                                <p>대기 중</p>
+                            </div>
+                            <i class="small-box-icon bi bi-clock-fill"></i>
+                            <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                                자세히 보기 <i class="bi bi-arrow-right-circle ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box text-bg-danger">
+                            <div class="inner">
+                                <h3>0</h3>
+                                <p>오류</p>
+                            </div>
+                            <i class="small-box-icon bi bi-exclamation-triangle-fill"></i>
+                            <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                                자세히 보기 <i class="bi bi-arrow-right-circle ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <strong>Admin</strong>
+        <span class="float-end">Spring Boot Admin</span>
+    </footer>
+</div>
+<div th:replace="~{common/scripts :: scripts}"></div>
+</body>
+</html>
