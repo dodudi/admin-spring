@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('클라이언트 등록')}"></head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<div class="app-wrapper">
+
+    <nav th:replace="~{common/navbar :: navbar}"></nav>
+    <aside th:replace="~{common/sidebar :: sidebar('clients')}"></aside>
+
+    <main class="app-main">
+        <div class="app-content-header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="mb-0">클라이언트 등록</h3>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-end">
+                            <li class="breadcrumb-item"><a th:href="@{/}">대시보드</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/clients}">클라이언트 관리</a></li>
+                            <li class="breadcrumb-item active">등록</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-content">
+            <div class="container-fluid">
+                <form th:action="@{/clients}" th:object="${form}" method="post">
+
+                    <div class="row">
+                        <!-- 기본 정보 -->
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0"><i class="bi bi-info-circle me-2"></i>기본 정보</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Client ID <span class="text-danger">*</span></label>
+                                        <input type="text" th:field="*{clientId}" class="form-control"
+                                               th:classappend="${#fields.hasErrors('clientId')} ? ' is-invalid'"
+                                               placeholder="예: my-web-app">
+                                        <div class="invalid-feedback" th:errors="*{clientId}"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">클라이언트 이름 <span class="text-danger">*</span></label>
+                                        <input type="text" th:field="*{clientName}" class="form-control"
+                                               th:classappend="${#fields.hasErrors('clientName')} ? ' is-invalid'"
+                                               placeholder="예: My Web Application">
+                                        <div class="invalid-feedback" th:errors="*{clientName}"></div>
+                                    </div>
+                                    <div class="mb-0">
+                                        <label class="form-label fw-semibold">로그인 페이지 URI</label>
+                                        <input type="text" th:field="*{loginPageUri}" class="form-control"
+                                               placeholder="예: http://localhost:3000/login">
+                                        <div class="form-text">커스텀 로그인 페이지 URL (비워두면 기본 로그인 페이지 사용)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Grant Types -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0"><i class="bi bi-key me-2"></i>Grant Types</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="grantTypes" value="authorization_code" id="gt_authcode"
+                                               th:checked="${form.grantTypes.contains('authorization_code')}">
+                                        <label class="form-check-label" for="gt_authcode">
+                                            <code>authorization_code</code>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="grantTypes" value="refresh_token" id="gt_refresh"
+                                               th:checked="${form.grantTypes.contains('refresh_token')}">
+                                        <label class="form-check-label" for="gt_refresh">
+                                            <code>refresh_token</code>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="grantTypes" value="client_credentials" id="gt_cc"
+                                               th:checked="${form.grantTypes.contains('client_credentials')}">
+                                        <label class="form-check-label" for="gt_cc">
+                                            <code>client_credentials</code>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Scopes -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0"><i class="bi bi-tags me-2"></i>Scopes</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="scopes" value="openid" id="sc_openid"
+                                               th:checked="${form.scopes.contains('openid')}">
+                                        <label class="form-check-label" for="sc_openid"><code>openid</code></label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="scopes" value="profile" id="sc_profile"
+                                               th:checked="${form.scopes.contains('profile')}">
+                                        <label class="form-check-label" for="sc_profile"><code>profile</code></label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="scopes" value="email" id="sc_email"
+                                               th:checked="${form.scopes.contains('email')}">
+                                        <label class="form-check-label" for="sc_email"><code>email</code></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 고급 설정 -->
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0"><i class="bi bi-link-45deg me-2"></i>Redirect URI</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Redirect URIs</label>
+                                        <textarea th:field="*{redirectUrisRaw}" class="form-control" rows="3"
+                                                  placeholder="URI를 한 줄에 하나씩 입력"></textarea>
+                                        <div class="form-text">여러 URI는 줄바꿈으로 구분</div>
+                                    </div>
+                                    <div class="mb-0">
+                                        <label class="form-label fw-semibold">Post-Logout Redirect URIs</label>
+                                        <textarea th:field="*{postLogoutRedirectUrisRaw}" class="form-control" rows="3"
+                                                  placeholder="URI를 한 줄에 하나씩 입력"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0"><i class="bi bi-sliders me-2"></i>토큰 설정</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">액세스 토큰 유효시간 (분)</label>
+                                        <input type="number" th:field="*{accessTokenTtlMinutes}" class="form-control"
+                                               th:classappend="${#fields.hasErrors('accessTokenTtlMinutes')} ? ' is-invalid'"
+                                               min="1" max="1440">
+                                        <div class="invalid-feedback" th:errors="*{accessTokenTtlMinutes}"></div>
+                                        <div class="form-text">1 ~ 1440분 (최대 24시간)</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">리프레시 토큰 유효시간 (일)</label>
+                                        <input type="number" th:field="*{refreshTokenTtlDays}" class="form-control"
+                                               th:classappend="${#fields.hasErrors('refreshTokenTtlDays')} ? ' is-invalid'"
+                                               min="1" max="365">
+                                        <div class="invalid-feedback" th:errors="*{refreshTokenTtlDays}"></div>
+                                        <div class="form-text">1 ~ 365일</div>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               th:field="*{requirePkce}" id="requirePkce">
+                                        <label class="form-check-label" for="requirePkce">
+                                            PKCE 필수 요구
+                                        </label>
+                                        <div class="form-text">Authorization Code Flow에서 PKCE(code_challenge) 필수화</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-1"></i>클라이언트 등록
+                        </button>
+                        <a th:href="@{/clients}" class="btn btn-secondary">취소</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <strong>Admin</strong>
+        <span class="float-end">Spring Boot Admin</span>
+    </footer>
+</div>
+<div th:replace="~{common/scripts :: scripts}"></div>
+</body>
+</html>

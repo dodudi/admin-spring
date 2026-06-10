@@ -17,6 +17,13 @@
                         <p>대시보드</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a th:href="@{/clients}" class="nav-link"
+                       th:classappend="${currentPage == 'clients'} ? ' active'">
+                        <i class="nav-icon bi bi-shield-lock-fill"></i>
+                        <p>클라이언트 관리</p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

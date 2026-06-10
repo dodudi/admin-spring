@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{common/head :: head('클라이언트 관리')}"></head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<div class="app-wrapper">
+
+    <nav th:replace="~{common/navbar :: navbar}"></nav>
+    <aside th:replace="~{common/sidebar :: sidebar('clients')}"></aside>
+
+    <main class="app-main">
+        <div class="app-content-header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="mb-0">클라이언트 관리</h3>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-end">
+                            <li class="breadcrumb-item"><a th:href="@{/}">대시보드</a></li>
+                            <li class="breadcrumb-item active">클라이언트 관리</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-content">
+            <div class="container-fluid">
+
+                <!-- 성공 메시지 -->
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0">OAuth2 클라이언트 목록</h3>
+                        <a th:href="@{/clients/new}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-lg me-1"></i>새 클라이언트
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(clients)}" class="text-center py-5 text-muted">
+                            <i class="bi bi-shield-x fs-1 d-block mb-3"></i>
+                            <p class="mb-0">등록된 클라이언트가 없습니다.</p>
+                        </div>
+                        <table th:if="${!#lists.isEmpty(clients)}" class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Client ID</th>
+                                <th>이름</th>
+                                <th>Grant Types</th>
+                                <th>Scopes</th>
+                                <th>등록일</th>
+                                <th class="text-center" style="width: 80px;">상세</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="client : ${clients}">
+                                <td>
+                                    <code th:text="${client.clientId}"></code>
+                                </td>
+                                <td th:text="${client.clientName}"></td>
+                                <td>
+                                    <span th:each="grantType : ${client.grantTypeList()}"
+                                          class="badge bg-secondary me-1"
+                                          th:text="${grantType}"></span>
+                                </td>
+                                <td>
+                                    <span th:each="scope : ${client.scopeList()}"
+                                          class="badge bg-info text-dark me-1"
+                                          th:text="${scope}"></span>
+                                </td>
+                                <td th:text="${client.issuedAt != null ? #strings.substring(client.issuedAt.toString(), 0, 10) : '-'}"></td>
+                                <td class="text-center">
+                                    <a th:href="@{/clients/{id}(id=${client.id})}"
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <strong>Admin</strong>
+        <span class="float-end">Spring Boot Admin</span>
+    </footer>
+</div>
+<div th:replace="~{common/scripts :: scripts}"></div>
+</body>
+</html>
