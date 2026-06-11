@@ -45,6 +45,44 @@ Thymeleaf 예약 토큰 전체 목록: `gt`, `lt`, `ge`, `le`, `eq`, `ne`, `and`
 
 ---
 
+## 2026-06-11
+
+### Thymeleaf 3.1 이벤트 핸들러(`th:onclick`)에서 String 변수 사용 시 보안 오류
+
+**문제**
+`client/detail.html`에서 삭제 confirm 다이얼로그를 `th:onclick`으로 구성할 때 500 에러 발생.
+
+```
+Only variable expressions returning numbers or booleans are allowed in this context,
+any other datatypes are not trusted in the context of this expression, including Strings
+or any other object that could be rendered as a text literal.
+(template: "client/detail" - line 125, col 45)
+```
+
+**원인**
+Thymeleaf 3.1부터 XSS 방지를 위해 `onclick`, `onload` 등 DOM 이벤트 핸들러 속성에서 `${...}` 표현식이 숫자·불리언만 허용됨. String 값을 그대로 이벤트 핸들러에 삽입하면 스크립트 인젝션 벡터가 될 수 있기 때문.
+
+```html
+<!-- 오류: String 변수를 th:onclick에 직접 삽입 -->
+th:onclick="|return confirm('${client.clientId} 클라이언트를 ...')|"
+```
+
+**해결 방법**
+String 값을 `data-*` 속성에 저장하고, 이벤트 핸들러는 일반 `onclick`으로 `this.dataset.*`를 통해 읽도록 분리.
+
+```html
+<!-- 수정 후 -->
+th:data-client-id="${client.clientId}"
+onclick="return confirm(this.dataset.clientId + ' 클라이언트를 삭제합니다. 계속하시겠습니까?')"
+```
+
+채택하지 않은 방법: `th:attrappend`·`th:attr` 조합으로 속성값 구성 → 동일 보안 정책에 막혀 불가.
+
+**결과**
+`detail.html` line 125의 `th:onclick` → `th:data-client-id` + 일반 `onclick` 으로 변경하여 해결.
+
+---
+
 <!-- 아래 템플릿을 복사해서 사용 -->
 
 <!--

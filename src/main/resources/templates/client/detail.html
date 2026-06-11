@@ -66,16 +66,16 @@
 
                                     <dt class="col-5 text-muted">Grant Types</dt>
                                     <dd class="col-7">
-                                        <span th:each="gt : ${client.grantTypes}"
+                                        <span th:each="grantType : ${client.grantTypes}"
                                               class="badge bg-secondary d-block mb-1 text-start"
-                                              th:text="${gt}"></span>
+                                              th:text="${grantType}"></span>
                                     </dd>
 
                                     <dt class="col-5 text-muted">Scopes</dt>
                                     <dd class="col-7">
-                                        <span th:each="sc : ${client.scopes}"
+                                        <span th:each="scope : ${client.scopes}"
                                               class="badge bg-info text-dark d-block mb-1 text-start"
-                                              th:text="${sc}"></span>
+                                              th:text="${scope}"></span>
                                     </dd>
 
                                     <dt class="col-5 text-muted">PKCE</dt>
@@ -122,7 +122,8 @@
                                 </p>
                                 <form th:action="@{/clients/{id}/delete(id=${client.id})}" method="post">
                                     <button type="submit" class="btn btn-danger btn-sm w-100"
-                                            th:onclick="|return confirm('${client.clientId} 클라이언트를 삭제합니다. 계속하시겠습니까?')|">
+                                            th:data-client-id="${client.clientId}"
+                                            onclick="return confirm(this.dataset.clientId + ' 클라이언트를 삭제합니다. 계속하시겠습니까?')">
                                         <i class="bi bi-trash me-1"></i>클라이언트 삭제
                                     </button>
                                 </form>

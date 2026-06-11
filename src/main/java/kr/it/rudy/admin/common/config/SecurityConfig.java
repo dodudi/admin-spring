@@ -38,7 +38,7 @@ public class SecurityConfig {
     private LogoutSuccessHandler oidcLogoutSuccessHandler(ClientRegistrationRepository clientRegistrationRepository) {
         OidcClientInitiatedLogoutSuccessHandler handler =
                 new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
-        handler.setPostLogoutRedirectUri("{baseUrl}/oauth2/authorization/auth-server");
+        handler.setPostLogoutRedirectUri("{baseUrl}");
         return handler;
     }
 }
