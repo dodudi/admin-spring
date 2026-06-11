@@ -1,6 +1,6 @@
 # Security 인증 규칙
 
-이 파일은 Security 설정과 인증 방식을 정의한다.
+이 파일은 Security 설정과 인증 방식 작성 시 항상 따라야 할 규칙을 정의한다.
 
 ---
 
@@ -99,7 +99,7 @@ M2M 관련 빈은 `client/config/AuthServerClientConfig`에 둔다.
 `common/config/SecurityConfig`에 혼재시키지 않는다.
 
 ```java
-// ✅ AuthServerClientConfig — M2M 전용
+// ✅ 올바른 예
 @Bean
 public OAuth2AuthorizedClientManager m2mAuthorizedClientManager(...) {
     AuthorizedClientServiceOAuth2AuthorizedClientManager manager = ...;
@@ -136,7 +136,7 @@ public RestClient authServerRestClient(OAuth2AuthorizedClientManager m2mAuthoriz
 ### 인증 서버 API 호출
 
 ```java
-// ✅ authServerRestClient 빈을 주입받아 사용
+// ✅ 올바른 예
 @Service
 @RequiredArgsConstructor
 public class AuthServerClientService {

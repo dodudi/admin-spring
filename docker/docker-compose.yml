@@ -1,0 +1,32 @@
+services:
+  admin-postgres:
+    image: postgres:17-alpine
+    env_file:
+      - .env
+    ports:
+      - "10000:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U rudy -d admin" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - admin-network
+  admin-redis:
+    image: redis:7-alpine
+    ports:
+      - "20000:6379"
+    volumes:
+      - ./redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - admin-network
+networks:
+  admin-network:
+    driver: bridge
