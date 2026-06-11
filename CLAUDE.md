@@ -73,6 +73,7 @@ Detailed coding rules are in `.claude/rules/`:
 | `naming-conventions.md` | 클래스·인터페이스·구현체 네이밍 |
 | `test-conventions.md` | 테스트 어노테이션 선택, Mock 규칙, 네이밍 |
 | `git-conventions.md` | 브랜치 전략, 커밋 메시지 형식, PR 규칙 |
+| `security-conventions.md` | OAuth2 로그인·로그아웃, M2M Client Credentials, SecurityConfig 규칙 |
 
 ## Configuration
 
