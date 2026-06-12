@@ -1,0 +1,18 @@
+services:
+  admin-app:
+    build:
+      context: ..
+      dockerfile: ../Dockerfile
+    container_name: admin-app
+    env_file:
+      - .env
+    ports:
+      - "8090:8090"
+    restart: unless-stopped
+    networks:
+      - admin-network
+
+networks:
+  admin-network:
+    external: true
+    name: admin-spring_admin-network
