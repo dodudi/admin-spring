@@ -10,7 +10,7 @@ spring:
             client-id: ${ADMIN_CLIENT_ID}
             client-secret: ${ADMIN_CLIENT_SECRET}
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: ${REDIRECT_URI}
             scope: openid, profile
           m2m-client:
             client-id: ${M2M_CLIENT_ID}
