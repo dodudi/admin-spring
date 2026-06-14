@@ -1,5 +1,6 @@
 package kr.it.rudy.admin.common.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,6 +16,9 @@ import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInit
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${app.base-url}")
+    private String appBaseUrl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -38,7 +42,7 @@ public class SecurityConfig {
     private LogoutSuccessHandler oidcLogoutSuccessHandler(ClientRegistrationRepository clientRegistrationRepository) {
         OidcClientInitiatedLogoutSuccessHandler handler =
                 new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
-        handler.setPostLogoutRedirectUri("{baseUrl}");
+        handler.setPostLogoutRedirectUri(appBaseUrl);
         return handler;
     }
 }

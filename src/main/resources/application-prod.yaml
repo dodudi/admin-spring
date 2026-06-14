@@ -1,6 +1,9 @@
 auth-server:
   base-url: ${AUTH_SERVER_URL}
 
+app:
+  base-url: ${APP_BASE_URL}
+
 spring:
   security:
     oauth2:
